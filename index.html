@@ -53,6 +53,11 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        .tracker-button {
+            background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);
+            box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
+        }
     </style>
 </head>
 <body class="p-2 md:p-8">
@@ -64,10 +69,16 @@
                 <h1 class="text-4xl font-[800] text-slate-900 tracking-tight">שלום טל, <span class="text-indigo-600 italic underline decoration-indigo-200">יועץ הגמל האישי שלך</span></h1>
                 <p class="text-slate-500 font-medium mt-1">מערכת ניתוח השוואתית מבוססת מספר קופה ומדדי שוק.</p>
             </div>
-            <div class="flex items-center gap-4 bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
-                <div class="text-right">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase">מזהה קופה פעיל</p>
-                    <p id="activeFundDisplay" class="text-sm font-extrabold text-indigo-600 italic">לא נבחרה קופה</p>
+            <div class="flex items-center gap-4">
+                <!-- External Tracker Link -->
+                <a href="https://amitayj.github.io/tal-amitay-tracker/" target="_blank" class="tracker-button text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2 hover:scale-105 transition-transform">
+                    <span>📈</span> למעקב הביצועים שלי
+                </a>
+                <div class="flex items-center gap-4 bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+                    <div class="text-right">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase">מזהה קופה פעיל</p>
+                        <p id="activeFundDisplay" class="text-sm font-extrabold text-indigo-600 italic">לא נבחרה קופה</p>
+                    </div>
                 </div>
             </div>
         </header>
@@ -352,4 +363,3 @@
         window.onload = runAnalysis;
     </script>
 </body>
-</html>
