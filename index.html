@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GamelWise - Premium Financial Tracking</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@200;300;400;600;700;800&display=swap');
+        :root { --primary: #6366f1; --secondary: #a855f7; --accent: #10b981; --glass: rgba(255, 255, 255, 0.8); }
+        body { font-family: 'Assistant', sans-serif; background: radial-gradient(circle at top left, #f1f5f9, #e2e8f0); min-height: 100vh; color: #0f172a; }
+        .glass-panel { background: var(--glass); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 1.5rem; box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05); }
+        .stat-card { background: white; border-radius: 1.25rem; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: 1px solid #e2e8f0; }
+        .stat-card:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05); }
+        .gradient-text { background: linear-gradient(90deg, #4f46e5, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .action-button { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3); transition: all 0.3s; color: white; font-weight: 800; }
+        .action-button:hover { filter: brightness(1.1); box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4); }
+        input, select { border: 1px solid #e2e8f0; background: #f8fafc !important; border-radius: 0.75rem; padding: 0.75rem; }
+        @keyframes fadeInSlide { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-up { animation: fadeInSlide 0.6s ease-out forwards; }
+    </style>
+</head>
+<body class="antialiased">
+    <div class="flex flex-col lg:flex-row min-h-screen">
+        <nav class="lg:w-72 glass-panel m-4 lg:sticky lg:top-4 lg:h-[calc(100vh-2rem)] flex flex-col z-40">
+            <div class="p-8">
+                <div class="flex items-center gap-3 mb-10">
+                    <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg">
+                        <svg viewBox="0 0 24 24" class="w-6 h-6 fill-current"><path d="M21 16.5c0 .38-.21.71-.53.88l-7.97 4.43c-.16.09-.33.14-.5.14s-.34-.05-.5-.14l-7.97-4.43c-.32-.17-.53-.5-.53-.88v-9c0-.38.21-.71.53-.88l7.97-4.43c.16-.09.33-.14.5-.14s.34.05.5.14l7.97 4.43c.32.17.53.5.53.88v9z"/></svg>
+                    </div>
+                    <span class="text-2xl font-extrabold tracking-tight gradient-text">GamelWise</span>
+                </div>
+                <div class="space-y-1">
+                    <a href="#" class="flex items-center gap-3 p-3 bg-indigo-50 text-indigo-700 font-bold rounded-xl"><span>🏠</span> דף הבית</a>
+                    <a href="#" class="flex items-center gap-3 p-3 text-slate-500 font-medium rounded-xl hover:bg-slate-50"><span>📊</span> השוואת שוק</a>
+                </div>
+            </div>
+        </nav>
+        <main class="flex-grow p-4 lg:p-8 overflow-x-hidden">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 animate-fade-up">
+                <div>
+                    <h1 class="text-3xl font-extrabold text-slate-900">שלום, טל 👋</h1>
+                    <p class="text-slate-500 font-medium">הנה סיכום מצב קופות הגמל שלך נכון להיום.</p>
+                </div>
+                <div id="dateDisplay" class="bg-white px-4 py-2 rounded-2xl border border-slate-200 shadow-sm text-sm font-bold text-slate-600"></div>
+            </div>
+            <div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
+                <div class="xl:col-span-8 space-y-8 animate-fade-up">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="stat-card p-6 flex flex-col justify-between h-40">
+                            <p class="text-slate-400 text-xs font-bold uppercase">ציון בריאות</p>
+                            <h3 id="healthScore" class="text-4xl font-extrabold text-emerald-500">85</h3>
+                        </div>
+                        <div class="stat-card p-6 flex flex-col justify-between h-40">
+                            <p class="text-slate-400 text-xs font-bold uppercase">פער דמי ניהול</p>
+                            <h3 id="feeGap" class="text-4xl font-extrabold text-slate-800">+0.4%</h3>
+                        </div>
+                        <div class="stat-card p-6 flex flex-col justify-between h-40">
+                            <p class="text-slate-400 text-xs font-bold uppercase">חיסכון אפשרי</p>
+                            <h3 id="savingPotential" class="text-4xl font-extrabold text-indigo-600">₪750</h3>
+                        </div>
+                    </div>
+                    <div class="glass-panel p-8 h-96">
+                        <canvas id="performanceChart"></canvas>
+                    </div>
+                </div>
+                <div class="xl:col-span-4 space-y-6 animate-fade-up">
+                    <div class="glass-panel p-6">
+                        <h2 class="text-lg font-extrabold mb-6 italic">הגדרות תיק</h2>
+                        <div class="space-y-4">
+                            <select id="fundSelect" class="w-full font-bold">
+                                <option value="equity">מנייתי</option>
+                                <option value="general">כללי</option>
+                            </select>
+                            <input type="number" id="userFee" value="0.75" class="w-full" placeholder="דמי ניהול %">
+                            <input type="number" id="userBalance" value="125000" class="w-full" placeholder="צבירה ₪">
+                            <button onclick="updateAnalysis()" class="action-button w-full py-4 rounded-2xl">⚡ חשב מחדש</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script>
+        const marketData = { equity: { avgFee: 0.32, avgReturn: 13.1, topReturn: 16.2 }, general: { avgFee: 0.38, avgReturn: 8.7, topReturn: 10.4 } };
+        let myChart;
+        window.onload = () => {
+            document.getElementById('dateDisplay').innerText = new Date().toLocaleDateString('he-IL');
+            const ctx = document.getElementById('performanceChart').getContext('2d');
+            myChart = new Chart(ctx, { type: 'bar', data: { labels: ['הקופה שלך', 'ממוצע קטגוריה', 'מובילת השוק'], datasets: [{ data: [11.3, 13.1, 16.2], backgroundColor: ['#6366f1', '#e2e8f0', '#10b981'], borderRadius: 10 }] }, options: { responsive: true, maintainAspectRatio: false } });
+            updateAnalysis();
+        };
+        function updateAnalysis() {
+            const fund = marketData[document.getElementById('fundSelect').value];
+            const fee = parseFloat(document.getElementById('userFee').value);
+            const balance = parseFloat(document.getElementById('userBalance').value);
+            const gap = fee - fund.avgFee;
+            document.getElementById('feeGap').innerText = (gap > 0 ? '+' : '') + gap.toFixed(2) + '%';
+            document.getElementById('savingPotential').innerText = '₪' + Math.round(Math.max(0, balance * (gap/100))).toLocaleString();
+            myChart.data.datasets[0].data = [fund.avgReturn - 1.8, fund.avgReturn, fund.topReturn];
+            myChart.update();
+        }
+    </script>
+</body>
+</html>
