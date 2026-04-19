@@ -3,111 +3,166 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GamelWise Pro - שלום טל</title>
+    <title>GamelWise Pro - טל</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@200;400;700;800&display=swap');
-        body { font-family: 'Assistant', sans-serif; background: #f8fafc; color: #1e293b; }
-        .glass { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border: 1px solid #e2e8f0; border-radius: 1.5rem; }
-        .card { transition: all 0.3s ease; border: 1px solid #e2e8f0; }
-        .card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
-        .btn-primary { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; transition: all 0.3s; }
-        .btn-primary:hover { opacity: 0.9; transform: scale(1.02); }
+        body { 
+            font-family: 'Assistant', sans-serif; 
+            background-color: #f1f5f9; 
+            color: #1e293b;
+            scroll-behavior: smooth;
+        }
+        .glass-card { 
+            background: rgba(255, 255, 255, 0.95); 
+            backdrop-filter: blur(10px); 
+            border: 1px solid #e2e8f0; 
+            border-radius: 2rem; 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        }
+        .action-button {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(79, 70, 229, 0.4);
+        }
+        .retirement-gradient {
+            background: linear-gradient(225deg, #1e293b 0%, #0f172a 100%);
+        }
+        input:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.8s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body class="p-4 md:p-10 animate-fade-in">
 
-    <div class="max-w-6xl mx-auto">
-        <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
             <div>
-                <h1 class="text-4xl font-800 text-slate-900 tracking-tight">שלום, <span class="text-indigo-600">טל</span> 👋</h1>
-                <p class="text-slate-500 font-medium">מרכז השליטה הפיננסי שלך - עדכון אחרון: אפריל 2026</p>
+                <h1 class="text-5xl font-[800] text-slate-900 tracking-tight mb-2">שלום, <span class="text-indigo-600">טל</span> 👋</h1>
+                <p class="text-slate-500 text-lg font-medium italic">מרכז השליטה הפיננסי האישי שלך - גרסת מומחה</p>
             </div>
-            <div class="bg-white p-2 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
-                <span class="px-4 py-1 bg-indigo-50 text-indigo-700 rounded-lg font-bold text-sm">חשבון פרימיום</span>
-                <div class="h-8 w-px bg-slate-200"></div>
-                <button onclick="location.reload()" class="p-2 hover:bg-slate-100 rounded-xl">🔄</button>
+            <div class="flex items-center gap-4 bg-white p-3 rounded-3xl shadow-sm border border-slate-200">
+                <div class="text-right">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">עדכון אחרון</p>
+                    <p id="currentDate" class="text-sm font-bold text-slate-700 leading-none"></p>
+                </div>
+                <div class="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-2xl">🏆</div>
             </div>
         </header>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
             
-            <div class="lg:col-span-4 space-y-6">
-                <div class="glass p-6 shadow-sm">
-                    <h2 class="text-xl font-bold mb-6 flex items-center gap-2">⚙️ הגדרות תיק נוכחי</h2>
-                    <div class="space-y-4">
+            <!-- Left Panel: Input Section -->
+            <div class="xl:col-span-4 space-y-8">
+                <div class="glass-card p-8">
+                    <h2 class="text-xl font-[800] mb-8 flex items-center gap-3">
+                        <span class="w-8 h-8 rounded-xl bg-indigo-100 flex items-center justify-center text-sm">⚙️</span>
+                        נתוני התיק שלך
+                    </h2>
+                    <div class="space-y-6">
                         <div>
-                            <label class="block text-xs font-bold text-slate-400 mb-2 uppercase">צבירה נוכחית (₪)</label>
-                            <input type="number" id="balance" value="250000" oninput="calculateAll()" class="w-full p-3 rounded-xl border border-slate-200 font-bold focus:ring-2 focus:ring-indigo-500 outline-none">
+                            <label class="text-xs font-bold text-slate-400 mb-2 block uppercase tracking-wider">צבירה נוכחית (₪)</label>
+                            <input type="number" id="balance" value="350000" oninput="runCalculations()" class="w-full bg-slate-50 border border-slate-200 p-4 rounded-2xl font-[800] text-xl text-slate-700 transition-all focus:bg-white">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-400 mb-2 uppercase">דמי ניהול מהצבירה (%)</label>
-                            <input type="number" id="fee" value="0.7" step="0.01" oninput="calculateAll()" class="w-full p-3 rounded-xl border border-slate-200 font-bold focus:ring-2 focus:ring-indigo-500 outline-none">
+                            <label class="text-xs font-bold text-slate-400 mb-2 block uppercase tracking-wider">דמי ניהול מצבירה (%)</label>
+                            <input type="number" id="fee" value="0.80" step="0.01" oninput="runCalculations()" class="w-full bg-slate-50 border border-slate-200 p-4 rounded-2xl font-[800] text-xl text-slate-700 transition-all focus:bg-white">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-400 mb-2 uppercase">הפקדה חודשית (₪)</label>
-                            <input type="number" id="monthly" value="2000" oninput="calculateAll()" class="w-full p-3 rounded-xl border border-slate-200 font-bold focus:ring-2 focus:ring-indigo-500 outline-none">
+                            <label class="text-xs font-bold text-slate-400 mb-2 block uppercase tracking-wider">הפקדה חודשית (₪)</label>
+                            <input type="number" id="monthly" value="4000" oninput="runCalculations()" class="w-full bg-slate-50 border border-slate-200 p-4 rounded-2xl font-[800] text-xl text-slate-700 transition-all focus:bg-white">
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-slate-900 text-white p-8 rounded-[2rem] shadow-xl overflow-hidden relative">
+                <!-- Retirement Card -->
+                <div class="retirement-gradient p-10 rounded-[2.5rem] text-white shadow-2xl relative overflow-hidden">
                     <div class="relative z-10">
-                        <h3 class="text-indigo-300 font-bold text-sm mb-2 uppercase">תחזית גיל 67</h3>
-                        <p class="text-4xl font-800 mb-4" id="retirementTotal">₪0</p>
-                        <p class="text-xs text-slate-400 leading-relaxed mb-6">החישוב מבוסס על תשואה שנתית ממוצעת של 7% בניכוי דמי הניהול שלך.</p>
-                        <div class="bg-white/10 p-4 rounded-2xl">
-                            <p class="text-xs text-indigo-200 mb-1">כמה דמי ניהול תשלם עד הפרישה?</p>
-                            <p class="font-bold text-rose-400" id="totalFeesPaid">₪0</p>
+                        <p class="text-indigo-400 font-bold text-xs uppercase tracking-widest mb-3">צפי הון נטו בגיל 67</p>
+                        <h3 class="text-5xl font-[800] mb-8 tracking-tight" id="retireTotal">₪0</h3>
+                        
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center p-4 bg-white/5 rounded-2xl border border-white/10">
+                                <span class="text-slate-400 text-sm italic">מתוכם דמי ניהול שיאבדו:</span>
+                                <span class="text-rose-400 font-bold" id="lostFees">₪0</span>
+                            </div>
+                            <div class="flex justify-between items-center p-4 bg-white/5 rounded-2xl border border-white/10">
+                                <span class="text-slate-400 text-sm italic">קצבה חודשית משוערת:</span>
+                                <span class="text-emerald-400 font-bold" id="estPension">₪0</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-indigo-500/10 rounded-full blur-3xl"></div>
+                    <div class="absolute -right-20 -top-20 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl"></div>
                 </div>
             </div>
 
-            <div class="lg:col-span-8 space-y-8">
+            <!-- Right Panel: Charts and Tools -->
+            <div class="xl:col-span-8 space-y-8">
                 
-                <div class="glass p-8 shadow-sm">
-                    <div class="flex justify-between items-center mb-8">
-                        <h3 class="text-xl font-800">השוואת ביצועים מול השוק</h3>
-                        <div class="flex gap-2">
-                            <span class="flex items-center gap-1 text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-100">
-                                <span class="w-2 h-2 bg-indigo-600 rounded-full"></span> התיק שלך
-                            </span>
+                <!-- Main Comparison Chart -->
+                <div class="glass-card p-8">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+                        <div>
+                            <h3 class="text-2xl font-[800] text-slate-800 tracking-tight">השוואת מסלולי תשואה</h3>
+                            <p class="text-slate-500 font-medium">הקופה שלך מול מדד ה-S&P 500 וממוצע השוק</p>
                         </div>
                     </div>
-                    <div class="h-64">
+                    <div class="h-80">
                         <canvas id="mainChart"></canvas>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="card bg-white p-6 rounded-2xl flex flex-col justify-between">
+                <!-- Tools Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Letter Tool -->
+                    <div class="glass-card p-8 flex flex-col justify-between hover:border-indigo-400 transition-all cursor-pointer group">
                         <div>
-                            <div class="w-12 h-12 bg-rose-50 rounded-xl flex items-center justify-center text-2xl mb-4">📢</div>
-                            <h4 class="font-bold text-lg mb-2">דמי הניהול שלך יקרים!</h4>
-                            <p class="text-sm text-slate-500 leading-relaxed mb-6">מצאנו שאתה משלם <span id="feeGapText" class="text-rose-500 font-bold"></span> יותר מהממוצע בשוק למסלול שלך.</p>
+                            <div class="w-16 h-16 bg-rose-50 rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform">📧</div>
+                            <h4 class="text-xl font-[800] mb-3">מכתב להוזלת עמלות</h4>
+                            <p class="text-slate-500 text-sm leading-relaxed mb-8">
+                                נמצא פער של <span id="gapIndicator" class="text-rose-500 font-bold">0%</span> מהממוצע. הפק מכתב מוכן לסוכן כדי לחסוך עשרות אלפי שקלים.
+                            </p>
                         </div>
-                        <button onclick="generateLetter()" class="btn-primary w-full py-3 rounded-xl font-bold text-sm">הפק מכתב לסוכן</button>
+                        <button onclick="generateLetter()" class="action-button w-full py-5 rounded-2xl text-white font-[800] text-sm shadow-xl">הפק מכתב לסוכן</button>
                     </div>
 
-                    <div class="card bg-white p-6 rounded-2xl flex flex-col justify-between">
+                    <!-- Market Comparison -->
+                    <div class="glass-card p-8 border-dashed border-2 flex flex-col justify-between group">
                         <div>
-                            <div class="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-2xl mb-4">🚀</div>
-                            <h4 class="font-bold text-lg mb-2">שדרוג ל-S&P 500</h4>
-                            <p class="text-sm text-slate-500 leading-relaxed mb-6">מעבר למסלול מחקה מדד עשוי להגדיל את הקצבה החודשית שלך בכ-₪1,400.</p>
+                            <div class="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform">🚀</div>
+                            <h4 class="text-xl font-[800] mb-3">פוטנציאל S&P 500</h4>
+                            <p class="text-slate-500 text-sm leading-relaxed mb-8">
+                                מעבר למסלול מחקה מדד יכול להוסיף לך כ-<span class="text-emerald-500 font-bold">₪150,000</span> להון הסופי בגלל דמי ניהול נמוכים ותשואה היסטורית עודפת.
+                            </p>
                         </div>
-                        <button class="bg-slate-100 hover:bg-slate-200 text-slate-700 w-full py-3 rounded-xl font-bold text-sm transition">השווה מסלולים</button>
+                        <button class="w-full py-5 rounded-2xl bg-white border-2 border-slate-100 text-slate-600 font-[800] text-sm hover:bg-slate-50 transition-all">השווה למדד S&P 500</button>
                     </div>
                 </div>
 
-                <div id="letterArea" class="hidden glass p-8 border-2 border-indigo-200 animate-fade-in">
-                    <div class="flex justify-between items-center mb-4">
-                        <h4 class="font-bold text-indigo-900 text-lg">טיוטה מוכנה לסוכן הביטוח</h4>
-                        <button onclick="copyLetter()" class="text-indigo-600 font-bold text-sm underline">העתק טקסט</button>
+                <!-- Hidden Letter Content -->
+                <div id="letterBox" class="hidden glass-card p-10 border-2 border-indigo-200 animate-fade-in relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-3 bg-indigo-600 text-white text-[10px] font-bold uppercase tracking-widest">טיוטה מוכנה</div>
+                    <div class="flex justify-between items-center mb-8">
+                        <h4 class="text-2xl font-[800] text-slate-900">טקסט להעתקה</h4>
+                        <button onclick="copyLetter()" class="text-indigo-600 font-[800] text-sm flex items-center gap-2 hover:bg-indigo-50 p-2 rounded-lg transition-colors">
+                            <span>📋</span> העתק טקסט
+                        </button>
                     </div>
-                    <div id="letterContent" class="bg-indigo-50/50 p-6 rounded-xl text-sm leading-loose text-slate-700 whitespace-pre-wrap"></div>
+                    <div id="letterContent" class="bg-indigo-50/30 p-8 rounded-3xl text-lg leading-relaxed text-slate-700 italic border border-indigo-100 shadow-inner"></div>
                 </div>
 
             </div>
@@ -115,65 +170,71 @@
     </div>
 
     <script>
-        let mainChart;
+        let dashboardChart;
 
-        function calculateAll() {
+        function runCalculations() {
             const balance = parseFloat(document.getElementById('balance').value) || 0;
             const fee = parseFloat(document.getElementById('fee').value) || 0;
             const monthly = parseFloat(document.getElementById('monthly').value) || 0;
             
-            // 1. Retirement Calculation (Simplified compound interest for 25 years)
-            const years = 25;
-            const annualReturn = 0.07; // 7% market average
-            const netReturn = annualReturn - (fee / 100);
-            
-            // Future value of current balance
-            const fvBalance = balance * Math.pow(1 + netReturn, years);
-            // Future value of monthly deposits
-            const fvMonthly = monthly * 12 * ((Math.pow(1 + netReturn, years) - 1) / netReturn);
-            const total = fvBalance + fvMonthly;
-            
-            // Total fees paid (rough estimate)
-            const feesPaid = (total * (fee/100)) * (years / 2);
+            const years = 25; // Estimate until retirement
+            const marketReturn = 0.08; // 8% avg return
+            const marketFee = 0.35; // Target fee
 
-            document.getElementById('retirementTotal').innerText = '₪' + Math.round(total).toLocaleString();
-            document.getElementById('totalFeesPaid').innerText = '₪' + Math.round(feesPaid).toLocaleString();
-            
-            const marketAvgFee = 0.35;
-            const feeGap = (fee - marketAvgFee).toFixed(2);
-            document.getElementById('feeGapText').innerText = feeGap + "%";
+            // Calculate Final Wealth
+            function calculateWealth(r, f) {
+                const netRate = r - (f / 100);
+                const months = years * 12;
+                const monthlyRate = netRate / 12;
+                
+                const fvBalance = balance * Math.pow(1 + netRate, years);
+                const fvMonthly = monthly * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate);
+                return fvBalance + fvMonthly;
+            }
 
-            updateChart(fee, marketAvgFee);
+            const currentTotal = calculateWealth(marketReturn, fee);
+            const optimizedTotal = calculateWealth(marketReturn, marketFee);
+            const spTotal = calculateWealth(0.10, 0.25); // S&P 500 estimation
+
+            const lostFees = optimizedTotal - currentTotal;
+
+            // UI Updates
+            document.getElementById('retireTotal').innerText = '₪' + Math.round(currentTotal).toLocaleString();
+            document.getElementById('lostFees').innerText = '₪' + Math.round(lostFees).toLocaleString();
+            document.getElementById('estPension').innerText = '₪' + Math.round(currentTotal / 200).toLocaleString(); 
+            
+            const gap = (fee - marketFee).toFixed(2);
+            document.getElementById('gapIndicator').innerText = gap + "%";
+
+            updateChart(currentTotal, optimizedTotal, spTotal);
         }
 
-        function updateChart(userFee, marketFee) {
+        function updateChart(c, o, s) {
             const ctx = document.getElementById('mainChart').getContext('2d');
-            
-            if (mainChart) mainChart.destroy();
-            
-            mainChart = new Chart(ctx, {
+            if (dashboardChart) dashboardChart.destroy();
+
+            dashboardChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: ['דמי ניהול מהצבירה (%)', 'תשואה שנתית נטו (%)'],
-                    datasets: [
-                        {
-                            label: 'התיק שלך (טל)',
-                            data: [userFee, 7 - userFee],
-                            backgroundColor: '#6366f1',
-                            borderRadius: 8
-                        },
-                        {
-                            label: 'ממוצע שוק',
-                            data: [marketFee, 7 - marketFee],
-                            backgroundColor: '#e2e8f0',
-                            borderRadius: 8
-                        }
-                    ]
+                    labels: ['המצב הנוכחי', 'דמי ניהול אופטימליים', 'מסלול S&P 500'],
+                    datasets: [{
+                        label: 'הון נטו בפרישה (₪)',
+                        data: [c, o, s],
+                        backgroundColor: ['#6366f1', '#4f46e5', '#10b981'],
+                        borderRadius: 15,
+                        barThickness: 60
+                    }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    scales: { y: { beginAtZero: true } }
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, grid: { display: false }, ticks: { callback: (v) => '₪' + v.toLocaleString() } },
+                        x: { grid: { display: false } }
+                    }
                 }
             });
         }
@@ -181,20 +242,28 @@
         function generateLetter() {
             const fee = document.getElementById('fee').value;
             const balance = document.getElementById('balance').value;
-            const content = `שלום,\n\nבבדיקה שערכתי בתיק קופת הגמל שלי, ראיתי שדמי הניהול הנוכחיים עומדים על ${fee}%. \nלפי נתוני השוק העדכניים לשנת 2026, הממוצע למסלול שלי עומד על כ-0.35%.\n\nלאור הצבירה שלי שעומדת על כ-₪${parseInt(balance).toLocaleString()}, אבקש לעדכן את דמי הניהול שלי בהתאם לממוצע בשוק, או לחילופין לבחון מעבר לחברה מתחרה שמציעה תנאים אלו.\n\nאשמח לעדכונך,\nטל.`;
+            const text = `שלום רב,\n\nאני פונה אליך לגבי תיק הגמל/פנסיה שלי. בבדיקה שערכתי, ראיתי שדמי הניהול שלי עומדים על ${fee}%, בזמן שדמי הניהול הממוצעים בשוק לצבירה של ₪${parseInt(balance).toLocaleString()} עומדים על כ-0.35% בלבד.\n\nלאור זאת, אבקש להשוות את תנאי דמי הניהול שלי למקובל בשוק. אשמח לקבל הצעה מעודכנת בהקדם לפני שאבחן חלופות בחברות אחרות.\n\nבברכה,\nטל.`;
             
-            document.getElementById('letterContent').innerText = content;
-            document.getElementById('letterArea').classList.remove('hidden');
-            document.getElementById('letterArea').scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('letterContent').innerText = text;
+            document.getElementById('letterBox').classList.remove('hidden');
+            document.getElementById('letterBox').scrollIntoView({ behavior: 'smooth' });
         }
 
         function copyLetter() {
             const text = document.getElementById('letterContent').innerText;
-            navigator.clipboard.writeText(text);
-            alert("המכתב הועתק! עכשיו אפשר להדביק ב-WhatsApp או במייל לסוכן.");
+            const el = document.createElement('textarea');
+            el.value = text;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+            alert("המכתב הועתק! עכשיו אפשר להדביק בווטסאפ או במייל לסוכן.");
         }
 
-        window.onload = calculateAll;
+        window.onload = function() {
+            document.getElementById('currentDate').innerText = new Date().toLocaleDateString('he-IL');
+            runCalculations();
+        };
     </script>
 </body>
 </html>
