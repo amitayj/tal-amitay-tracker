@@ -11,7 +11,6 @@
         
         :root {
             --primary: #4f46e5;
-            --primary-light: #818cf8;
             --success: #10b981;
             --warning: #f59e0b;
             --danger: #ef4444;
@@ -21,275 +20,285 @@
             font-family: 'Assistant', sans-serif; 
             background-color: #f8fafc; 
             color: #1e293b;
-            scroll-behavior: smooth;
         }
 
         .glass-card { 
-            background: rgba(255, 255, 255, 0.9); 
+            background: rgba(255, 255, 255, 0.95); 
             backdrop-filter: blur(12px); 
-            border: 1px solid rgba(226, 232, 240, 0.8); 
-            border-radius: 2rem; 
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.03);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #e2e8f0; 
+            border-radius: 1.5rem; 
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
         }
 
-        .glass-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.08);
+        .input-focus {
+            transition: all 0.3s;
         }
 
-        .gradient-bg {
+        .input-focus:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+            outline: none;
+        }
+
+        .gradient-header {
             background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
         }
 
-        .btn-primary {
-            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        /* Loading Animation */
+        .loader {
+            border-top-color: #4f46e5;
+            animation: spinner 0.6s linear infinite;
         }
-
-        .btn-primary:hover {
-            opacity: 0.9;
-            transform: scale(1.02);
-            box-shadow: 0 10px 20px -5px rgba(79, 70, 229, 0.4);
+        @keyframes spinner {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
-
-        .custom-range {
-            accent-color: var(--primary);
-        }
-
-        /* Animations */
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-slide { animation: slideIn 0.6s ease-out forwards; }
-
-        .progress-ring { transition: stroke-dashoffset 0.35s; transform: rotate(-90deg); transform-origin: 50% 50%; }
     </style>
 </head>
-<body class="p-4 lg:p-8">
+<body class="p-2 md:p-8">
 
     <div class="max-w-7xl mx-auto">
-        <!-- Top Navigation / Header -->
-        <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6 animate-slide">
+        <!-- Header -->
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
             <div>
-                <div class="flex items-center gap-3 mb-2">
-                    <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
-                    </div>
-                    <h1 class="text-4xl font-[800] text-slate-900 tracking-tight">GamelWise <span class="text-indigo-600">Pro</span></h1>
-                </div>
-                <p class="text-slate-500 font-medium italic">שלום טל, המערכת ניתחה את התיק שלך ומצאה הזדמנויות חדשות.</p>
+                <h1 class="text-4xl font-[800] text-slate-900 tracking-tight">שלום טל, <span class="text-indigo-600 italic underline decoration-indigo-200">יועץ הגמל האישי שלך</span></h1>
+                <p class="text-slate-500 font-medium mt-1">מערכת ניתוח השוואתית מבוססת מספר קופה ומדדי שוק.</p>
             </div>
-            
-            <div class="flex items-center gap-4">
-                <div class="bg-white px-5 py-3 rounded-2xl shadow-sm border border-slate-100 text-right">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase">מצב שוק נוכחי</p>
-                    <p class="text-sm font-bold text-emerald-500 flex items-center gap-1 justify-end">S&P 500: +1.2% 📈</p>
+            <div class="flex items-center gap-4 bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+                <div class="text-right">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase">מזהה קופה פעיל</p>
+                    <p id="activeFundDisplay" class="text-sm font-extrabold text-indigo-600 italic">לא נבחרה קופה</p>
                 </div>
-                <div class="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-xl cursor-pointer hover:bg-indigo-100 transition-colors">👤</div>
             </div>
         </header>
 
         <div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
             
-            <!-- Left Panel: Smart Inputs & Goals -->
+            <!-- Left Side: Inputs and Tracker -->
             <div class="xl:col-span-4 space-y-6">
-                <!-- Data Entry -->
-                <div class="glass-card p-8 animate-slide" style="animation-delay: 0.1s">
-                    <h3 class="text-lg font-bold mb-6 flex items-center gap-2 text-slate-800">
-                        <span>📊</span> ניהול פרמטרים
+                
+                <!-- Fund Search (Smart Sync Simulator) -->
+                <div class="glass-card p-6 border-t-4 border-indigo-600">
+                    <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
+                        <span>🔍</span> איתור קופה וסינכרון אוטומטי
                     </h3>
-                    <div class="space-y-5">
-                        <div class="group">
-                            <label class="text-xs font-bold text-slate-400 mb-2 block uppercase tracking-wider group-focus-within:text-indigo-600 transition-colors">צבירה נוכחית</label>
-                            <div class="relative">
-                                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">₪</span>
-                                <input type="number" id="balance" value="350000" oninput="runCalculations()" class="w-full bg-slate-50 border border-slate-200 pr-10 p-4 rounded-2xl font-bold text-xl text-slate-700 focus:bg-white focus:ring-4 focus:ring-indigo-100 transition-all">
-                            </div>
-                        </div>
-
-                        <div class="group">
-                            <label class="text-xs font-bold text-slate-400 mb-2 block uppercase tracking-wider group-focus-within:text-indigo-600 transition-colors">הפקדה חודשית</label>
-                            <div class="relative">
-                                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">₪</span>
-                                <input type="number" id="monthly" value="4000" oninput="runCalculations()" class="w-full bg-slate-50 border border-slate-200 pr-10 p-4 rounded-2xl font-bold text-xl text-slate-700 focus:bg-white focus:ring-4 focus:ring-indigo-100 transition-all">
-                            </div>
-                        </div>
-
+                    <div class="space-y-4">
                         <div>
-                            <div class="flex justify-between mb-2">
-                                <label class="text-xs font-bold text-slate-400 uppercase">דמי ניהול מצבירה</label>
-                                <span id="feeVal" class="text-xs font-bold text-indigo-600">0.80%</span>
+                            <label class="text-[10px] font-bold text-slate-400 uppercase mb-1 block tracking-widest">מספר קופה (גמל-נט/מסלקה)</label>
+                            <div class="flex gap-2">
+                                <input type="text" id="fundNumber" placeholder="לדוגמה: 512244" class="flex-grow bg-slate-50 border border-slate-200 p-3 rounded-xl font-bold input-focus">
+                                <button onclick="syncFundData()" class="bg-indigo-600 text-white px-4 rounded-xl font-bold hover:bg-indigo-700 transition-all flex items-center justify-center min-w-[80px]">
+                                    <span id="btnText">סנכרן</span>
+                                    <div id="loader" class="loader hidden w-4 h-4 border-2 border-white rounded-full"></div>
+                                </button>
                             </div>
-                            <input type="range" id="fee" min="0.05" max="1.5" step="0.01" value="0.80" oninput="runCalculations()" class="w-full custom-range h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
+                        </div>
+                        <div id="syncStatus" class="hidden bg-emerald-50 text-emerald-700 p-3 rounded-xl text-xs font-bold flex items-center gap-2">
+                            ✅ הנתונים סונכרנו בהצלחה מול מדדי 2024
                         </div>
                     </div>
                 </div>
 
-                <!-- Goal Progress -->
-                <div class="glass-card p-8 animate-slide" style="animation-delay: 0.2s">
-                    <h3 class="text-lg font-bold mb-6 text-slate-800">🎯 יעד פרישה: 5 מיליון ₪</h3>
-                    <div class="relative h-4 bg-slate-100 rounded-full overflow-hidden mb-4">
-                        <div id="goalProgress" class="absolute top-0 right-0 h-full bg-emerald-500 transition-all duration-1000" style="width: 0%"></div>
+                <!-- Financial Stats -->
+                <div class="glass-card p-6">
+                    <h3 class="font-bold text-slate-800 mb-6">פרמטרים לחישוב</h3>
+                    <div class="space-y-5">
+                        <div>
+                            <label class="text-[10px] font-bold text-slate-400 uppercase mb-1 block">צבירה נוכחית (₪)</label>
+                            <input type="number" id="balance" value="350000" oninput="runAnalysis()" class="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl font-bold text-lg input-focus">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-slate-400 uppercase mb-1 block">דמי ניהול נוכחיים (%)</label>
+                            <input type="number" id="fee" value="0.75" step="0.01" oninput="runAnalysis()" class="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl font-bold text-lg input-focus">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-slate-400 uppercase mb-1 block">הפקדה חודשית (₪)</label>
+                            <input type="number" id="monthly" value="4000" oninput="runAnalysis()" class="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl font-bold text-lg input-focus">
+                        </div>
                     </div>
-                    <p class="text-xs text-slate-500 font-medium italic" id="goalStatus">במסלול הנוכחי תגיע ל-72% מהיעד.</p>
                 </div>
 
-                <!-- Action Insight -->
-                <div class="gradient-bg p-8 rounded-[2.5rem] text-white shadow-xl animate-slide" style="animation-delay: 0.3s">
-                    <p class="text-indigo-300 font-bold text-xs uppercase mb-2">חיסכון בדמי ניהול (מצטבר)</p>
-                    <h3 class="text-4xl font-[800] mb-6 tracking-tight" id="lostFees">₪0</h3>
-                    <div class="p-4 bg-white/10 rounded-2xl border border-white/10 backdrop-blur-md">
-                        <p class="text-sm opacity-80 mb-1">טיפ מומחה:</p>
-                        <p class="text-sm font-medium">הוזלת דמי הניהול ב-0.2% תוסיף לך חופשה משפחתית בכל שנה בפרישה.</p>
+                <!-- Retirement Speedometer -->
+                <div class="gradient-header p-8 rounded-[2rem] text-white shadow-xl">
+                    <p class="text-indigo-300 text-[10px] font-bold uppercase mb-2">צפי הון בפרישה</p>
+                    <h2 id="finalWealth" class="text-4xl font-[800] mb-6">₪0</h2>
+                    <div class="space-y-4">
+                        <div class="flex justify-between text-xs">
+                            <span class="opacity-60">קצבה משוערת:</span>
+                            <span id="pensionVal" class="font-bold">₪0</span>
+                        </div>
+                        <div class="w-full bg-white/10 h-1.5 rounded-full overflow-hidden">
+                            <div id="progressBar" class="bg-indigo-400 h-full transition-all duration-700" style="width: 0%"></div>
+                        </div>
+                        <p class="text-[10px] opacity-70 italic text-center leading-relaxed">הערכה זו מבוססת על מקדם קצבה של 200 ותשואה ממוצעת של 7%.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Right Panel: Main Analytics -->
-            <div class="xl:col-span-8 space-y-8">
+            <!-- Right Side: Comparison Engine -->
+            <div class="xl:col-span-8 space-y-6">
                 
-                <!-- Summary Metrics Grid -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 animate-slide" style="animation-delay: 0.2s">
-                    <div class="glass-card p-6 border-r-4 border-indigo-500">
-                        <p class="text-slate-400 text-[10px] font-bold uppercase mb-1">הון צפוי בפרישה</p>
-                        <h4 class="text-2xl font-[800] text-slate-800" id="retireTotal">₪0</h4>
-                    </div>
-                    <div class="glass-card p-6 border-r-4 border-emerald-500">
-                        <p class="text-slate-400 text-[10px] font-bold uppercase mb-1">קצבה חודשית משוערת</p>
-                        <h4 class="text-2xl font-[800] text-slate-800" id="estPension">₪0</h4>
-                    </div>
-                    <div class="glass-card p-6 border-r-4 border-amber-500">
-                        <p class="text-slate-400 text-[10px] font-bold uppercase mb-1">גיל פרישה מתוכנן</p>
-                        <h4 class="text-2xl font-[800] text-slate-800">67</h4>
-                    </div>
-                </div>
-
-                <!-- Comparison & Simulation -->
-                <div class="glass-card p-8 animate-slide" style="animation-delay: 0.3s">
-                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
+                <!-- Interactive Comparison Tool -->
+                <div class="glass-card p-8">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
                         <div>
-                            <h3 class="text-2xl font-[800] text-slate-800">סימולציית צמיחה רב-מסלולית</h3>
-                            <p class="text-slate-500 text-sm">השפעת דמי ניהול ותשואה לאורך 25 שנה</p>
+                            <h3 class="text-xl font-bold text-slate-800">בוחן מסלולים השוואתי</h3>
+                            <p class="text-slate-500 text-sm">השוואה מול מסלולי S&P 500 ומסלולים מנוהלים מובילים</p>
                         </div>
                         <div class="flex gap-2">
-                            <button onclick="changeChartType('bar')" class="p-2 hover:bg-slate-100 rounded-lg transition-colors">📊</button>
-                            <button onclick="changeChartType('line')" class="p-2 hover:bg-slate-100 rounded-lg transition-colors">📈</button>
+                            <button onclick="toggleChartType('bar')" id="btnBar" class="px-3 py-1 bg-indigo-100 text-indigo-600 rounded-lg text-xs font-bold">עמודות</button>
+                            <button onclick="toggleChartType('line')" id="btnLine" class="px-3 py-1 bg-slate-100 text-slate-600 rounded-lg text-xs font-bold">קווי</button>
                         </div>
                     </div>
-                    <div class="h-[400px] w-full">
-                        <canvas id="mainChart"></canvas>
+                    
+                    <div class="h-80 w-full mb-8">
+                        <canvas id="compareChart"></canvas>
+                    </div>
+
+                    <!-- Comparison Table -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="p-4 rounded-2xl bg-indigo-50 border border-indigo-100">
+                            <p class="text-[10px] font-bold text-indigo-600 uppercase mb-1">מסלול נוכחי</p>
+                            <p class="text-sm font-bold text-slate-800">תשואה: 6.8%</p>
+                            <p class="text-xs text-slate-500">סיכון: בינוני</p>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-100">
+                            <p class="text-[10px] font-bold text-emerald-600 uppercase mb-1">S&P 500 (פסיבי)</p>
+                            <p class="text-sm font-bold text-slate-800">תשואה היסטורית: 10.2%</p>
+                            <p class="text-xs text-slate-500">סיכון: גבוה</p>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-amber-50 border border-amber-100">
+                            <p class="text-[10px] font-bold text-amber-600 uppercase mb-1">אקטיבי מנוהל (TOP 3)</p>
+                            <p class="text-sm font-bold text-slate-800">תשואה: 12.4%</p>
+                            <p class="text-xs text-slate-500">סיכון: גבוה מאוד</p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Advanced Tools -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 animate-slide" style="animation-delay: 0.4s">
-                    <!-- Smart Letter Generator -->
-                    <div class="glass-card p-8 relative overflow-hidden group">
-                        <div class="relative z-10">
-                            <div class="w-14 h-14 bg-indigo-50 rounded-2xl flex items-center justify-center text-2xl mb-6">✉️</div>
-                            <h4 class="text-xl font-bold mb-3">מחולל מכתבי מיקוח</h4>
-                            <p class="text-slate-500 text-sm mb-6 leading-relaxed">המערכת יצרה עבורך מכתב מותאם אישית לסוכן המבוסס על "דמי ניהול ממוצעים" של לקוחות VIP.</p>
-                            <button onclick="toggleLetter()" class="btn-primary w-full py-4 rounded-2xl text-white font-bold text-sm">הפק טקסט לסוכן</button>
+                <!-- Insights & Recommendations -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="glass-card p-6 flex flex-col justify-between group">
+                        <div>
+                            <div class="w-12 h-12 bg-rose-100 rounded-2xl flex items-center justify-center text-xl mb-4">📉</div>
+                            <h4 class="font-bold text-slate-800 mb-2">פער דמי ניהול</h4>
+                            <p id="feeInsight" class="text-sm text-slate-500 leading-relaxed mb-6">מצאנו כי דמי הניהול שלך גבוהים ב-0.35% מהממוצע לקופה זו. זה עשוי לעלות לך כ-₪120,000 עד הפרישה.</p>
                         </div>
+                        <button onclick="generateLetter()" class="w-full py-3 bg-slate-900 text-white rounded-xl font-bold text-sm hover:bg-slate-800 transition-all">הפק מכתב מיקוח לסוכן</button>
                     </div>
 
-                    <!-- Optimizer Tool -->
-                    <div class="glass-card p-8 border-dashed border-2 border-indigo-200">
-                        <div class="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center text-2xl mb-6">🚀</div>
-                        <h4 class="text-xl font-bold mb-3">אופטימיזציית S&P 500</h4>
-                        <p class="text-slate-500 text-sm mb-6 leading-relaxed">בדיקה מראה כי מעבר למסלול חוץ-ישראלי עשוי לשפר את הקצבה שלך ב-<span class="text-emerald-600 font-bold">₪2,400</span> לחודש.</p>
-                        <button class="w-full py-4 rounded-2xl bg-slate-800 text-white font-bold text-sm hover:bg-slate-900 transition-all">הורד ניתוח השוואתי PDF</button>
-                    </div>
-                </div>
-
-                <!-- Letter Content Area -->
-                <div id="letterBox" class="hidden glass-card p-8 border-2 border-indigo-200 animate-slide">
-                    <div class="flex justify-between items-center mb-6">
-                        <h5 class="font-bold text-slate-800">טיוטת פנייה לסוכן / חברת ביטוח</h5>
-                        <button onclick="copyToClipboard()" class="text-indigo-600 text-xs font-bold hover:underline">📋 העתק טקסט</button>
-                    </div>
-                    <div id="letterBody" class="bg-indigo-50/50 p-6 rounded-2xl text-slate-700 leading-relaxed text-sm italic">
+                    <div class="glass-card p-6 flex flex-col justify-between">
+                        <div>
+                            <div class="w-12 h-12 bg-emerald-100 rounded-2xl flex items-center justify-center text-xl mb-4">🚀</div>
+                            <h4 class="font-bold text-slate-800 mb-2">שיפור תשואה פוטנציאלי</h4>
+                            <p id="yieldInsight" class="text-sm text-slate-500 leading-relaxed mb-6">מעבר למסלול מנייתי/מחקה מדד עשוי להגדיל את הקצבה החודשית שלך ב-₪2,850.</p>
+                        </div>
+                        <button class="w-full py-3 border-2 border-slate-100 text-slate-600 rounded-xl font-bold text-sm hover:bg-slate-50 transition-all">השווה למסלולים דומים</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-8 py-4 rounded-2xl shadow-2xl transition-all duration-500 translate-y-20 opacity-0 z-50">
-        המכתב הועתק בהצלחה! ✅
+    <!-- Letter Modal (Simple Custom Box) -->
+    <div id="letterModal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-[2rem] max-w-2xl w-full p-8 shadow-2xl animate-in zoom-in-95 duration-300">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold">מכתב מוכן לסוכן הביטוח</h3>
+                <button onclick="closeLetter()" class="text-slate-400 hover:text-slate-600">✕</button>
+            </div>
+            <div id="letterBody" class="bg-slate-50 p-6 rounded-2xl text-slate-700 leading-relaxed text-sm italic mb-6"></div>
+            <button onclick="copyLetter()" class="w-full py-4 bg-indigo-600 text-white rounded-2xl font-bold shadow-lg shadow-indigo-100">העתק טקסט וסגור</button>
+        </div>
     </div>
 
     <script>
-        let dashboardChart;
+        let myChart;
         let chartType = 'bar';
 
-        function runCalculations() {
+        // Simulated fund database
+        const fundDatabase = {
+            "512244": { name: "הראל מסלול מנייתי", fee: 0.35, yield: 11.2 },
+            "743": { name: "אלטשולר שחם כללי", fee: 0.65, yield: 7.8 },
+            "1343": { name: "מנורה מחקה S&P 500", fee: 0.20, yield: 10.8 },
+            "998": { name: "מיטב השתלמות", fee: 0.45, yield: 9.1 }
+        };
+
+        function syncFundData() {
+            const num = document.getElementById('fundNumber').value;
+            const btnText = document.getElementById('btnText');
+            const loader = document.getElementById('loader');
+            
+            btnText.classList.add('hidden');
+            loader.classList.remove('hidden');
+
+            // Simulating API call delay
+            setTimeout(() => {
+                loader.classList.add('hidden');
+                btnText.classList.remove('hidden');
+                
+                const data = fundDatabase[num];
+                if (data) {
+                    document.getElementById('fee').value = data.fee;
+                    document.getElementById('activeFundDisplay').innerText = data.name;
+                    document.getElementById('syncStatus').classList.remove('hidden');
+                    runAnalysis();
+                } else {
+                    alert("מספר קופה לא נמצא במאגר המקומי. המערכת תבצע הערכה כללית על פי ממוצעי שוק.");
+                    document.getElementById('activeFundDisplay').innerText = "קופה כללית (הערכה)";
+                    runAnalysis();
+                }
+            }, 1200);
+        }
+
+        function runAnalysis() {
             const balance = parseFloat(document.getElementById('balance').value) || 0;
             const fee = parseFloat(document.getElementById('fee').value) || 0;
             const monthly = parseFloat(document.getElementById('monthly').value) || 0;
             
-            document.getElementById('feeVal').innerText = fee.toFixed(2) + "%";
+            const years = 25;
 
-            const years = 25; 
-            const targetGoal = 5000000;
-
-            // Wealth Logic
-            function getFV(initial, monthlyContrib, annualRate, annualFee, yrs) {
-                const netRate = annualRate - (annualFee / 100);
-                const months = yrs * 12;
+            function calcFV(rate, annualFee) {
+                const netRate = (rate - annualFee) / 100;
+                const months = years * 12;
                 const monthlyRate = netRate / 12;
                 
-                const fvBalance = initial * Math.pow(1 + netRate, yrs);
-                const fvMonthly = monthlyContrib * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate);
+                const fvBalance = balance * Math.pow(1 + netRate, years);
+                const fvMonthly = monthly * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate);
                 return fvBalance + fvMonthly;
             }
 
-            const current = getFV(balance, monthly, 0.07, fee, years);
-            const optimized = getFV(balance, monthly, 0.07, 0.30, years);
-            const sp500 = getFV(balance, monthly, 0.10, 0.20, years);
+            const current = calcFV(7, fee);
+            const passive = calcFV(10.2, 0.25);
+            const active = calcFV(12.4, 0.85);
 
             // UI Updates
-            document.getElementById('retireTotal').innerText = '₪' + Math.round(current).toLocaleString();
-            document.getElementById('lostFees').innerText = '₪' + Math.round(optimized - current).toLocaleString();
-            document.getElementById('estPension').innerText = '₪' + Math.round(current / 195).toLocaleString();
+            document.getElementById('finalWealth').innerText = '₪' + Math.round(current).toLocaleString();
+            document.getElementById('pensionVal').innerText = '₪' + Math.round(current / 200).toLocaleString();
+            
+            const progress = Math.min(100, (current / 5000000) * 100);
+            document.getElementById('progressBar').style.width = progress + "%";
 
-            // Progress Goal
-            const progressPercent = Math.min(100, (current / targetGoal) * 100);
-            document.getElementById('goalProgress').style.width = progressPercent + "%";
-            document.getElementById('goalStatus').innerText = `במסלול הנוכחי תגיע ל-${Math.round(progressPercent)}% מהיעד (5 מיליון ₪).`;
-
-            renderChart(current, optimized, sp500);
-            updateLetterText(fee, balance);
+            updateChart(current, passive, active);
         }
 
-        function renderChart(c, o, s) {
-            const ctx = document.getElementById('mainChart').getContext('2d');
-            if (dashboardChart) dashboardChart.destroy();
+        function updateChart(c, p, a) {
+            const ctx = document.getElementById('compareChart').getContext('2d');
+            if (myChart) myChart.destroy();
 
-            const data = {
-                labels: ['מצב נוכחי', 'ניהול אופטימלי', 'פוטנציאל S&P 500'],
-                datasets: [{
-                    label: 'הון נטו (₪)',
-                    data: [c, o, s],
-                    backgroundColor: [
-                        'rgba(99, 102, 241, 0.8)',
-                        'rgba(79, 70, 229, 0.9)',
-                        'rgba(16, 185, 129, 0.9)'
-                    ],
-                    borderColor: ['#4f46e5', '#4338ca', '#059669'],
-                    borderWidth: 2,
-                    borderRadius: 12,
-                    fill: true,
-                    tension: 0.4
-                }]
-            };
-
-            dashboardChart = new Chart(ctx, {
+            myChart = new Chart(ctx, {
                 type: chartType,
-                data: data,
+                data: {
+                    labels: ['נוכחי', 'פסיבי (S&P)', 'אקטיבי (Top)'],
+                    datasets: [{
+                        label: 'הון צפוי (₪)',
+                        data: [c, p, a],
+                        backgroundColor: ['#4f46e5', '#10b981', '#f59e0b'],
+                        borderColor: ['#4f46e5', '#10b981', '#f59e0b'],
+                        borderRadius: 12,
+                        tension: 0.4,
+                        fill: chartType === 'line'
+                    }]
+                },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
@@ -297,50 +306,50 @@
                     scales: {
                         y: { 
                             beginAtZero: true, 
-                            grid: { color: '#f1f5f9' },
                             ticks: { callback: (v) => '₪' + (v/1000000).toFixed(1) + 'M' }
-                        },
-                        x: { grid: { display: false } }
+                        }
                     }
                 }
             });
         }
 
-        function changeChartType(type) {
+        function toggleChartType(type) {
             chartType = type;
-            runCalculations();
+            document.getElementById('btnBar').className = type === 'bar' ? 'px-3 py-1 bg-indigo-100 text-indigo-600 rounded-lg text-xs font-bold' : 'px-3 py-1 bg-slate-100 text-slate-600 rounded-lg text-xs font-bold';
+            document.getElementById('btnLine').className = type === 'line' ? 'px-3 py-1 bg-indigo-100 text-indigo-600 rounded-lg text-xs font-bold' : 'px-3 py-1 bg-slate-100 text-slate-600 rounded-lg text-xs font-bold';
+            runAnalysis();
         }
 
-        function updateLetterText(fee, balance) {
-            const text = `לכבוד חברת הביטוח / סוכן הביטוח,\n\nשמי טל ואני מחזיק אצלכם בתיק פנסיוני עם צבירה של כ-₪${parseInt(balance).toLocaleString()}.\n\nלאחרונה ביצעתי השוואת תנאים וגיליתי כי דמי הניהול שלי (${fee}%) גבוהים משמעותית מהממוצע המוצע כיום בשוק לצבירה בסדר גודל כזה (0.3%-0.4%).\n\nאבקשכם לעדכן את דמי הניהול בתיק שלי בהתאם, על מנת שאוכל להמשיך את ניהול הכספים אצלכם ולא אאלץ לבחון העברת התיק למתחרים המציעים תנאים טובים יותר.\n\nאשמח למענה בהקדם,\nטל.`;
+        function generateLetter() {
+            const fee = document.getElementById('fee').value;
+            const balance = document.getElementById('balance').value;
+            const fundName = document.getElementById('activeFundDisplay').innerText;
+            
+            const text = `שלום,\nאני מחזיק בתיק ${fundName} עם צבירה של ₪${parseInt(balance).toLocaleString()}.\nבדקתי את דמי הניהול שלי לאחרונה (עומדים על ${fee}%) וגיליתי כי הם גבוהים מהממוצע בשוק עבור קופות דומות ומסלולים מחקי מדד.\nאבקש לקבל הצעה מעודכנת להפחתת דמי הניהול ל-0.3% מהצבירה, בהתאם לתנאי השוק הנוכחיים.\nבמידה ולא יבוצע עדכון, אשקול להעביר את התיק למסלול מתחרה.\nתודה, טל.`;
+            
             document.getElementById('letterBody').innerText = text;
+            document.getElementById('letterModal').classList.remove('hidden');
         }
 
-        function toggleLetter() {
-            const box = document.getElementById('letterBox');
-            box.classList.toggle('hidden');
-            if(!box.classList.contains('hidden')) {
-                box.scrollIntoView({ behavior: 'smooth' });
-            }
-        }
-
-        function copyToClipboard() {
+        function copyLetter() {
             const text = document.getElementById('letterBody').innerText;
-            const el = document.createElement('textarea');
-            el.value = text;
-            document.body.appendChild(el);
-            el.select();
-            document.execCommand('copy');
-            document.body.removeChild(el);
-
-            const toast = document.getElementById('toast');
-            toast.classList.remove('translate-y-20', 'opacity-0');
+            navigator.clipboard.writeText(text);
+            // Fallback since alert might not be ideal in all environments
+            const btn = event.target;
+            const originalText = btn.innerText;
+            btn.innerText = "הועתק בהצלחה!";
             setTimeout(() => {
-                toast.classList.add('translate-y-20', 'opacity-0');
-            }, 3000);
+                btn.innerText = originalText;
+                closeLetter();
+            }, 1500);
         }
 
-        window.onload = runCalculations;
+        function closeLetter() {
+            document.getElementById('letterModal').classList.add('hidden');
+        }
+
+        // Initial launch
+        window.onload = runAnalysis;
     </script>
 </body>
 </html>
